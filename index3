@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Academic Journey</title>
+  <style>
+    :root {
+      --pastel-blue: #a2d2ff;
+      --pastel-green: #bde0fe;
+      --pastel-purple: #cdb4db;
+      --pastel-pink: #ffc8dd;
+      --uottawa-red: #9e1748;
+      --carleton-blue: #0a5f8c;
+      --timeline-line: #84a98c;
+      --text-dark: #2b2d42;
+      --text-light: #f8f9fa;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 60px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--text-dark);
+      margin-bottom: 80px;
+      font-size: 3.2rem;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 200px;
+      height: 6px;
+      background: linear-gradient(90deg, var(--pastel-blue), var(--pastel-purple));
+      margin: 30px auto;
+      border-radius: 3px;
+    }
+
+    .timeline-container {
+      position: relative;
+      padding: 100px 0;
+      min-height: 800px;
+    }
+
+    .timeline-scroller {
+      overflow-x: auto;
+      padding-bottom: 60px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .timeline-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .timeline {
+      display: flex;
+      position: relative;
+      padding: 80px 0;
+      width: max-content;
+      min-width: 100%;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--timeline-line);
+      transform: translateY(-50%);
+      z-index: 1;
+      border-radius: 4px;
+    }
+
+    .event {
+      position: relative;
+      width: 400px;
+      margin: 0 90px;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .dot {
+      width: 35px;
+      height: 35px;
+      background: white;
+      border: 6px solid var(--pastel-purple);
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      position: relative;
+      z-index: 3;
+      transition: all 0.5s ease;
+    }
+
+    .event:hover .dot {
+      transform: scale(1.3);
+      border-color: var(--pastel-blue);
+    }
+
+    .card {
+      background: white;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+      transition: all 0.5s ease;
+      width: 380px;
+      margin-top: 40px;
+    }
+
+    .event:nth-child(odd) .card {
+      margin-top: 60px;
+    }
+
+    .event:nth-child(even) .card {
+      margin-bottom: 60px;
+    }
+
+    .event:hover .card {
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      transform: translateY(-10px);
+    }
+
+    .date {
+      color: var(--pastel-purple);
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+
+    .card h3 {
+      margin: 0 0 20px 0;
+      font-size: 1.7rem;
+    }
+
+    .card ul {
+      margin: 20px 0 0 0;
+      padding-left: 25px;
+    }
+
+    .card li {
+      margin-bottom: 12px;
+      font-size: 1.15rem;
+      line-height: 1.7;
+    }
+
+    .university-logo {
+      height: 60px;
+      margin-bottom: 20px;
+      object-fit: contain;
+      max-width: 200px;
+    }
+
+    .path-option.engineering .university-logo {
+      width: 200px;
+      height: auto;
+    }
+
+    .path-selection {
+      text-align: center;
+      margin: 120px auto;
+      max-width: 1000px;
+      padding: 60px;
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 10;
+      display: none;
+    }
+
+    .path-selection.show {
+      display: block;
+    }
+
+    .path-options {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-top: 60px;
+    }
+
+    .path-option {
+      padding: 30px 45px;
+      border-radius: 18px;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      font-weight: bold;
+      width: 350px;
+      text-align: center;
+      border: none;
+      font-family: inherit;
+      font-size: 1.1rem;
+    }
+
+    .path-option.nursing {
+      background: var(--uottawa-red);
+      color: white;
+    }
+
+    .path-option.engineering {
+      background: white;
+      border: 2px solid var(--carleton-blue);
+    }
+
+    .path-option:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+    }
+
+    .path-option h3 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .scroll-hint {
+      text-align: center;
+      margin-top: 60px;
+      color: #6c757d;
+      font-style: italic;
+      font-size: 1.3rem;
+      transition: opacity 0.5s ease;
+    }
+
+    .back-button {
+      display: block;
+      margin: 50px auto;
+      padding: 18px 35px;
+      background: var(--pastel-purple);
+      color: white;
+      border: none;
+      border-radius: 35px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .back-button:hover {
+      background: var(--pastel-blue);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .path-container {
+      display: none;
+      margin-top: 60px;
+    }
+
+    .path-completion {
+      text-align: center;
+      margin: 60px auto;
+      max-width: 800px;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    .theme-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 3px solid #f1f1f1;
+    }
+
+    @media (max-width: 1200px) {
+      .event {
+        width: 360px;
+        margin: 0 70px;
+      }
+      .card {
+        width: 340px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 40px 25px;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 60px;
+      }
+      .event {
+        width: 300px;
+        margin: 0 50px;
+      }
+      .card {
+        width: 280px;
+        padding: 30px;
+      }
+      .path-options {
+        flex-direction: column;
+        gap: 35px;
+      }
+      .path-option {
+        width: 100%;
+        padding: 25px 30px;
+      }
+      .path-selection {
+        padding: 40px 30px;
+        margin: 80px auto;
+      }
+      .university-logo {
+        height: 50px;
+      }
+      .theme-image {
+        height: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Academic Journey</h1>
+    
+    <div class="timeline-container" id="main-timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-scroller" id="scroller">
+        <div class="timeline">
+          
+          <!-- Grade 11 -->
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">July 2025</div>
+              <h3>Summer School</h3>
+              <img src="https://www.cliftonhill.com/falls_blog/wp-content/uploads/2024/08/niagarafallssunset.jpg" class="theme-image" alt="Books">
+              <ul>
+                <li>Online English (Jul 6-26)</li>
+                <li>Complete all work effectively and to my utmost satisfaction</li>
+                <li>Ask teacher for advice and improvements on writing</li>
+                <li>Get 95%+ grade</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">August 2025</div>
+              <h3>Summer Activities</h3>
+              <img src="https://www.narcity.com/media-library/canada-s-wonderland.jpg?id=34295517&width=1245&height=700&coordinates=0%2C60%2C0%2C60" class="theme-image" alt="Karate">
+              <ul>
+                <li>Attend 2 weddings in Oshawa</li>
+                <li>Bond with family, spend time with groom and bride</li>
+                <li>Visit Canada's Wonderland with close family</li>
+                <li>Volunteer at karate dojo, aim for part-time job</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">September 2025</div>
+              <h3>Grade 11 Courses</h3>
+              <img src="https://starwalk.space/gallery/images/what-is-space/1140x641.jpg" class="theme-image" alt="School supplies">
+              <ul>
+                <li><strong>Courses:</strong> MCR3U (Functions), SBI3U (Biology), SCH3U (Chemistry), SPH3U (Physics), HSP3U (Psychology), CH4YU (World History), HFC3M (Food & Culture), SES4UT (Earth & Space Science, E-learning)</li>
+                <li>Meet new teachers, prepare for courses</li>
+                <li>Read curriculum requirements for all subjects</li>
+                <li>Talk with friends about their summer</li>
+                <li>Join clubs with valuable roles</li>
+                <li>Focus on sciences while maintaining hobbies</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">November 2025</div>
+              <h3>Mid-Year Goals</h3>
+              <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29uJTIwdHlwaW5nfGVufDB8fDB8fHww" class="theme-image" alt="Medical equipment">
+              <ul>
+                <li>Get report card with high marks</li>
+                <li>Be involved in school community</li>
+                <li>Gain medical volunteer experience</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">June 2026</div>
+              <h3>Grade 11 Completion</h3>
+              <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" class="theme-image" alt="Engineering">
+              <ul>
+                <li>Develop effective study skills</li>
+                <li>Maintain high academic standards</li>
+                <li>Volunteer at medical/engineering centers</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Grade 12 -->
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">July 2026</div>
+              <h3>Grade 12 Summer</h3>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_map_of_Afghanistan_%282004-2021%29.svg/2560px-Flag_map_of_Afghanistan_%282004-2021%29.svg.png" class="theme-image" alt="Afghanistan flag">
+              <ul>
+                <li>Online English Summer School (Jul 6-26)</li>
+                <li>Complete all work to best ability</li>
+                <li>Visit Afghanistan to explore cultural roots</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">September 2026</div>
+              <h3>Grade 12 Courses</h3>
+              <img src="https://i.pinimg.com/236x/0f/43/5a/0f435a33d1128ae39a92326cbaf8e011.jpg" class="theme-image" alt="University">
+              <ul>
+                <li><strong>Courses:</strong> ENG4U (English), MHF4U (Advanced Functions), MCV4U (Calculus), SCH4U (Chemistry), MDM4U (Data Management), SPH4U (Physics), SBI4UT (Biology E-learning)</li>
+                <li>Maintain 95% average</li>
+                <li>Prepare scholarship applications</li>
+                <li>Join engineering/biology/robotics clubs</li>
+                <li>Attend university program info sessions</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="event">
+            <div class="dot"></div>
+            <div class="card">
+              <div class="date">June 2027</div>
+              <h3>Graduation</h3>
+              <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" class="theme-image" alt="Graduation">
+              <ul>
+                <li>Apply to OSAP and scholarships</li>
+                <li>Maintain 90%+ average</li>
+                <li>Spend time with family</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Path Selection -->
+          <div class="event">
+            <div class="dot" style="border-color: var(--pastel-blue);"></div>
+            <div class="card" style="background-color: var(--pastel-green);">
+              <div class="date">June 2027</div>
+              <h3>Choose Your Path</h3>
+              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" class="theme-image" alt="Crossroads">
+              <p>High school complete! Select your future path below.</p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    
+    <div class="scroll-hint" id="scrollHint">← Scroll horizontally to view timeline →</div>
+    
+    <!-- Path Selection Screen -->
+    <div class="path-selection" id="pathSelection">
+      <h2>Select My Academic Path</h2>
+      <p>My journey continues! Choose between either of two exciting paths:</p>
+      
+      <div class="path-options">
+        <button class="path-option nursing" data-path="nursing">
+          <img src="https://studyonline.ca/wp-content/uploads/2022/08/University-of-Ottawa-Logo.png" class="university-logo" alt="uOttawa Logo">
+          <h3>Nursing Path</h3>
+          <p>Bachelor of Science in Nursing</p>
+        </button>
+        
+        <button class="path-option engineering" data-path="engineering">
+          <img src="https://carleton.ca/brand/wp-content/uploads/brand-logo-800w-1.jpg" class="university-logo" alt="Carleton University Logo">
+          <h3>Engineering Path</h3>
+          <p>Architectural Engineering</p>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Path Templates -->
+    <template id="path-template">
+      <div class="timeline-container">
+        <div class="timeline-line"></div>
+        <div class="timeline-scroller">
+          <div class="timeline">
+            <div class="event">
+              <div class="dot" style="border-color: var(--path-color);"></div>
+              <div class="card" style="border-top: 6px solid var(--path-color);">
+                <div class="date">Fall 2027</div>
+                <h3 class="path-year">Year 1</h3>
+                <img class="theme-image" src="" alt="Path Image">
+                <ul class="path-details"></ul>
+              </div>
+            </div>
+            <!-- Years 2-4 will be added via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="path-completion">
+        <img class="completion-logo" src="" alt="University Logo">
+        <h2 class="completion-title">Path Completed!</h2>
+        <p class="completion-text">You've successfully completed the path.</p>
+        <button class="back-button">← Back to Path Selection</button>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Configuration data
+      const config = {
+        paths: {
+          nursing: {
+            color: 'var(--uottawa-red)',
+            logo: 'https://studyonline.ca/wp-content/uploads/2022/08/University-of-Ottawa-Logo.png',
+            image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+            name: 'Nursing',
+            university: 'University of Ottawa',
+            years: [
+              {
+                title: 'Nursing Year 1',
+                details: [
+                  'UOttawa BScN program ($3,044/term)',
+                  'Courses: Anatomy, physiology, health assessment',
+                  'Clinical placements with supervision',
+                  'Live at home to save money',
+                  'Join Afghan Student Association'
+                ],
+                image: 'https://www.uottawa.ca/about-us/sites/g/files/bhrskd336/files/2023-07/20171012-BF-CAMPUS-SCENIC-384.jpg'
+              },
+              {
+                title: 'Nursing Year 2',
+                details: [
+                  'Tuition: $3,044/term',
+                  'Courses: Pharmacology, medical-surgical nursing',
+                  'Mental health nursing specialization',
+                  'Apply for nursing-specific bursaries',
+                  'Continue living at home'
+                ],
+                image: 'https://carrington.edu/wp-content/uploads/2020/01/pharmacy-pills.jpg'
+              },
+              {
+                title: 'Nursing Year 3',
+                details: [
+                  'Tuition: $3,044/term',
+                  'Courses: Complex healthcare, family nursing',
+                  'Research in health and behavior',
+                  'Summer clinical assistant at Civic Hospital',
+                  'Develop professional portfolio'
+                ],
+                image: 'https://cf.ltkcdn.net/family/images/std/200821-800x533r1-family.jpg'
+              },
+              {
+                title: 'Nursing Year 4',
+                details: [
+                  'Tuition: $3,044/term',
+                  'Courses: Leadership in nursing, ethics',
+                  'Co-op placements in various specialties',
+                  'Prepare for NCLEX-RN licensure exam',
+                  'Graduate and become Registered Nurse'
+                ],
+                image: 'https://carolettings.com/wp-content/uploads/2021/06/shutterstock_658847998-1.jpg'
+              }
+            ]
+          },
+          engineering: {
+            color: 'var(--carleton-blue)',
+            logo: 'https://carleton.ca/brand/wp-content/uploads/brand-logo-800w-1.jpg',
+            image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+            name: 'Engineering',
+            university: 'Carleton University',
+            years: [
+              {
+                title: 'Engineering Year 1',
+                details: [
+                  'Tuition: $10,914/year',
+                  'Courses: Calculus, physics, chemistry',
+                  'Live at home to save money',
+                  'First co-op placement in summer',
+                  'Join robotics club'
+                ],
+                image: 'https://images.shiksha.com/mediadata/images/1533124606phpkOXXXA.jpeg'
+              },
+              {
+                title: 'Engineering Year 2',
+                details: [
+                  'Tuition: $11,012/year',
+                  'Courses: Thermodynamics and circuits',
+                  'Choose architectural engineering focus',
+                  'Second co-op placement in summer',
+                  'Network with professors'
+                ],
+                image: 'https://www.betterteam.com/images/architectural-engineer-job-description-4088x2725-20201124.jpeg'
+              },
+              {
+                title: 'Engineering Year 3',
+                details: [
+                  'Tuition: $11,223/year',
+                  'Courses: Advanced design projects',
+                  'Fluid mechanics, control systems',
+                  '8-month co-op placement during year',
+                  'Create professional portfolio'
+                ],
+                image: 'https://cdn.shopify.com/s/files/1/0306/6419/6141/articles/engineering_071526c8-ed68-4b18-92f1-6f4e65c81219.png'
+              },
+              {
+                title: 'Engineering Year 4',
+                details: [
+                  'Tuition: $12,300/year',
+                  'Courses: Avionics, thermodynamics',
+                  'Heat transfer, communication theory',
+                  'Complete degree requirements',
+                  'Graduate with B.Eng in Architectural Engineering'
+                ],
+                image: 'https://carolettings.com/wp-content/uploads/2021/06/shutterstock_658847998-1.jpg'
+              }
+            ]
+          }
+        }
+      };
+
+      // DOM elements
+      const elements = {
+        mainTimeline: document.getElementById('main-timeline'),
+        scroller: document.getElementById('scroller'),
+        pathSelection: document.getElementById('pathSelection'),
+        scrollHint: document.getElementById('scrollHint'),
+        pathOptions: document.querySelectorAll('.path-option')
+      };
+
+      // State
+      const state = {
+        viewedPaths: [],
+        autoScroll: true,
+        scrollPosition: 0,
+        scrollInterval: null,
+        inactivityTimer: null,
+        isUserScrolling: false
+      };
+
+      // Initialize
+      initAutoScroll();
+      setupEventListeners();
+
+      // Functions
+      function initAutoScroll() {
+        setTimeout(() => {
+          elements.scrollHint.style.opacity = '1';
+        }, 2000);
+
+        startAutoScroll();
+      }
+
+      function startAutoScroll() {
+        const timeline = document.querySelector('#main-timeline .timeline');
+        const maxScroll = timeline.scrollWidth - elements.scroller.clientWidth;
+        
+        if (state.scrollInterval) {
+          clearInterval(state.scrollInterval);
+        }
+        
+        state.scrollInterval = setInterval(() => {
+          if (!state.autoScroll && !state.isUserScrolling) {
+            // If not auto-scrolling but user isn't actively scrolling, resume
+            state.autoScroll = true;
+          }
+          
+          if (state.autoScroll) {
+            state.scrollPosition += 0.5;
+            elements.scroller.scrollLeft = state.scrollPosition;
+            
+            if (state.scrollPosition >= maxScroll) {
+              clearInterval(state.scrollInterval);
+              showPathSelection();
+            }
+          }
+        }, 16);
+      }
+
+      function showPathSelection() {
+        elements.pathSelection.classList.add('show');
+        elements.pathSelection.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      function setupEventListeners() {
+        // More resilient scroll handling
+        elements.scroller.addEventListener('scroll', handleUserScroll);
+        elements.scroller.addEventListener('wheel', handleWheel, { passive: true });
+        elements.scroller.addEventListener('touchstart', handleTouch, { passive: true });
+        elements.scroller.addEventListener('mousedown', handleMouse);
+        
+        // Path selection
+        elements.pathOptions.forEach(option => {
+          option.addEventListener('click', () => selectPath(option.dataset.path));
+        });
+        
+        // Add restart button functionality
+        document.addEventListener('keydown', (e) => {
+          if (e.key === ' ') { // Space bar to restart auto-scroll
+            restartAutoScroll();
+          }
+        });
+        
+        // Add click to restart functionality
+        elements.scroller.addEventListener('click', restartAutoScroll);
+      }
+
+      function handleUserScroll() {
+        // Only consider it user scrolling if there's significant movement
+        const currentScroll = elements.scroller.scrollLeft;
+        if (Math.abs(currentScroll - state.scrollPosition) > 10) {
+          state.isUserScrolling = true;
+          state.autoScroll = false;
+          state.scrollPosition = currentScroll;
+          
+          // Reset the flag after a short delay
+          clearTimeout(state.inactivityTimer);
+          state.inactivityTimer = setTimeout(() => {
+            state.isUserScrolling = false;
+            // Don't automatically restart, wait for user to finish
+          }, 1000);
+        }
+      }
+
+      function handleWheel() {
+        state.autoScroll = false;
+        state.isUserScrolling = true;
+        resetInactivityTimer();
+      }
+
+      function handleTouch() {
+        state.autoScroll = false;
+        state.isUserScrolling = true;
+        resetInactivityTimer();
+      }
+
+      function handleMouse() {
+        state.autoScroll = false;
+        state.isUserScrolling = true;
+        resetInactivityTimer();
+      }
+
+      function resetInactivityTimer() {
+        clearTimeout(state.inactivityTimer);
+        state.inactivityTimer = setTimeout(() => {
+          state.isUserScrolling = false;
+          // Don't auto-restart, let user decide
+        }, 3000);
+      }
+
+      function restartAutoScroll() {
+        state.autoScroll = true;
+        state.isUserScrolling = false;
+        startAutoScroll();
+        
+        // Show a brief notification
+        const notification = document.createElement('div');
+        notification.textContent = 'Auto-scroll resumed';
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.left = '50%';
+        notification.style.transform = 'translateX(-50%)';
+        notification.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        notification.style.color = 'white';
+        notification.style.padding = '10px 20px';
+        notification.style.borderRadius = '20px';
+        notification.style.zIndex = '1000';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.remove(), 500);
+        }, 2000);
+      }
+
+      function selectPath(path) {
+        hideMainContent();
+        state.viewedPaths.push(path);
+        showPath(path);
+      }
+
+      function hideMainContent() {
+        elements.mainTimeline.style.display = 'none';
+        elements.pathSelection.style.display = 'none';
+        elements.scrollHint.style.display = 'none';
+      }
+
+      function showPath(path) {
+        const pathConfig = config.paths[path];
+        const pathContainer = createPathContainer(pathConfig);
+        
+        document.querySelector('.container').appendChild(pathContainer);
+        pathContainer.style.display = 'block';
+        
+        scrollToElement(pathContainer);
+        startPathAutoScroll(pathContainer, pathConfig);
+      }
+
+      function createPathContainer(pathConfig) {
+        const template = document.getElementById('path-template');
+        const clone = template.content.cloneNode(true);
+        const container = document.createElement('div');
+        container.className = 'path-container';
+        container.id = `${pathConfig.name.toLowerCase()}-path`;
+        container.appendChild(clone);
+        
+        // Set path content
+        const timeline = container.querySelector('.timeline');
+        pathConfig.years.forEach((year, index) => {
+          if (index > 0) { // First year is already in template
+            const event = createPathEvent(year, pathConfig, index + 1);
+            timeline.appendChild(event);
+          } else {
+            updatePathEvent(container, year, pathConfig);
+          }
+        });
+        
+        // Set completion content
+        container.querySelector('.completion-logo').src = pathConfig.logo;
+        container.querySelector('.completion-title').textContent = `${pathConfig.name} Path Completed!`;
+        container.querySelector('.completion-text').textContent = `You've successfully completed the ${pathConfig.name} path at ${pathConfig.university}.`;
+        container.querySelector('.back-button').addEventListener('click', goBack);
+        
+        return container;
+      }
+
+      function createPathEvent(year, pathConfig, yearNum) {
+        const event = document.createElement('div');
+        event.className = 'event';
+        event.innerHTML = `
+          <div class="dot" style="border-color: ${pathConfig.color};"></div>
+          <div class="card" style="border-top: 6px solid ${pathConfig.color};">
+            <div class="date">${yearNum === 2 ? 'Fall 2028' : yearNum === 3 ? 'Fall 2029' : 'Fall 2030'}</div>
+            <h3>${year.title}</h3>
+            <img src="${year.image}" class="theme-image" alt="${pathConfig.name}">
+            <ul>
+              ${year.details.map(detail => `<li>${detail}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+        return event;
+      }
+
+      function updatePathEvent(container, year, pathConfig) {
+        container.querySelector('.path-year').textContent = year.title;
+        container.querySelector('.theme-image').src = year.image;
+        container.querySelector('.theme-image').alt = pathConfig.name;
+        container.querySelector('.path-details').innerHTML = 
+          year.details.map(detail => `<li>${detail}</li>`).join('');
+      }
+
+      function scrollToElement(element) {
+        window.scrollTo({
+          top: element.offsetTop - 50,
+          behavior: 'smooth'
+        });
+      }
+
+      function startPathAutoScroll(pathContainer, pathConfig) {
+        setTimeout(() => {
+          const pathScroller = pathContainer.querySelector('.timeline-scroller');
+          const pathTimeline = pathContainer.querySelector('.timeline');
+          let pathScrollPos = 0;
+          const pathMaxScroll = pathTimeline.scrollWidth - pathScroller.clientWidth;
+          
+          const pathScrollInterval = setInterval(() => {
+            pathScrollPos += 0.5;
+            pathScroller.scrollLeft = pathScrollPos;
+            
+            if (pathScrollPos >= pathMaxScroll) {
+              clearInterval(pathScrollInterval);
+              showCompletion(pathContainer, pathConfig);
+            }
+          }, 16);
+        }, 1000);
+      }
+
+      function showCompletion(pathContainer, pathConfig) {
+        const completion = pathContainer.querySelector('.path-completion');
+        completion.style.display = 'block';
+        scrollToElement(completion);
+      }
+
+      function goBack() {
+        // Hide all paths
+        document.querySelectorAll('.path-container').forEach(container => {
+          container.style.display = 'none';
+          container.querySelector('.path-completion').style.display = 'none';
+        });
+        
+        // Show path selection if not all paths viewed yet
+        if (state.viewedPaths.length < Object.keys(config.paths).length) {
+          updatePathOptions();
+          elements.pathSelection.style.display = 'block';
+          elements.pathSelection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          // Show main timeline if all paths viewed
+          showMainTimeline();
+        }
+      }
+
+      function updatePathOptions() {
+        state.viewedPaths.forEach(path => {
+          const button = document.querySelector(`.path-option[data-path="${path}"]`);
+          button.style.opacity = '0.6';
+          button.style.pointerEvents = 'none';
+          button.innerHTML = `
+            <img src="${config.paths[path].logo}" class="university-logo" alt="${config.paths[path].university} Logo">
+            <h3>${config.paths[path].name} Path</h3>
+            <p>✓ Already Viewed</p>`;
+        });
+      }
+
+      function showMainTimeline() {
+        elements.mainTimeline.style.display = 'block';
+        elements.scrollHint.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        state.viewedPaths = []; // Reset for new viewing
+        state.scrollPosition = 0;
+        elements.scroller.scrollLeft = 0;
+        startAutoScroll();
+      }
+    });
+  </script>
+</body>
+</html>
